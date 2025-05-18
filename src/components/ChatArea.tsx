@@ -6,9 +6,26 @@ import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Card } from "@/components/ui/card"
+
+import {
+  Mic,
+  ImagePlus,
+  Send,
+  Loader2,
+  Search,
+  ScanSearch,
+  Brain,
+  Video,
+  Image,
+  FileText,
+  Music,
+  Code2,
+  Speaker // Added the Speaker icon
+} from "lucide-react";
+
 import { 
-  User, Bot, Send, Sparkles, Copy, CheckCheck, MoreVertical, Menu,
-  Sun, Moon, Mic, ImagePlus, RefreshCw, ThumbsUp, ThumbsDown,
+  User, Bot,  Sparkles, Copy, CheckCheck, MoreVertical, Menu,
+  Sun, Moon , RefreshCw, ThumbsUp, ThumbsDown,
   MessageSquare, Settings, PlusCircle, ChevronRight
 } from "lucide-react"
 import { 
@@ -42,10 +59,9 @@ export function ChatArea() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isCopied, setIsCopied] = useState<{ [key: string]: boolean }>({})
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false)
-  const [darkMode, setDarkMode] = useState<boolean>(true) // تغيير الوضع الافتراضي إلى الليلي
+  const [darkMode, setDarkMode] = useState<boolean>(true)
   const [selectedChat, setSelectedChat] = useState<string>("current")
   
-  // أضفنا محادثات افتراضية للعرض في قائمة المحادثات
   const [chatHistory] = useState([
     { id: "chat1", title: "استفسار عن التسويق الرقمي", date: "اليوم" },
     { id: "chat2", title: "تطوير تطبيق موبايل", date: "أمس" },
@@ -55,12 +71,10 @@ export function ChatArea() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  // تأثير لتمرير الصفحة إلى آخر رسالة عند إضافة رسائل جديدة
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // تأثير لضبط ارتفاع حقل الإدخال تلقائيًا
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -68,7 +82,6 @@ export function ChatArea() {
     }
   }, [input]);
 
-  // تأثير للوضع المظلم
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark')
@@ -95,7 +108,6 @@ export function ChatArea() {
       textareaRef.current.style.height = 'auto';
     }
 
-    // محاكاة استجابة المساعد (يمكن استبدالها بطلب API حقيقي)
     setTimeout(() => {
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -148,7 +160,6 @@ export function ChatArea() {
   }
 
   const regenerateResponse = () => {
-    // يجد آخر رسالة من المساعد
     const lastAssistantMessageIndex = [...messages].reverse().findIndex(m => m.role === 'assistant');
     if (lastAssistantMessageIndex !== -1) {
       setIsLoading(true);
@@ -176,6 +187,17 @@ export function ChatArea() {
       role: 'assistant',
       timestamp: new Date(),
     }]);
+  }
+
+  // Function to handle text-to-speech
+  const handleTextToSpeech = (text: string) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ar-SA'; // Arabic (Saudi Arabia) language code
+      speechSynthesis.speak(utterance);
+    } else {
+      console.warn('Text-to-speech not supported in this browser');
+    }
   }
 
   return (
@@ -327,7 +349,6 @@ export function ChatArea() {
 
         {/* Chat Area */}
         <div className="flex-1 flex flex-col relative">
-          {/* خلفية مخصصة للمحادثة */}
           <div className="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none bg-center bg-repeat z-0" 
             style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23000000' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E\")" }}
           ></div>
@@ -342,10 +363,10 @@ export function ChatArea() {
                 >
                   <div className={`flex ${message.role === 'user' ? 'flex-row' : 'flex-row-reverse'} gap-3 max-w-3xl`}>
                     <Avatar 
-                      className={`h-10 w-10 self-end ${
+                      className={`h-10 w-10 self-end ring-2 ${
                         message.role === 'user' 
-                          ? 'bg-gradient-to-br from-blue-500 to-violet-600 border-2 border-white dark:border-gray-900 shadow-md' 
-                          : 'bg-gradient-to-br from-emerald-500 to-teal-700 border-2 border-white dark:border-gray-900 shadow-md'
+                          ? 'bg-gradient-to-br from-blue-500 to-violet-600 border-2 border-white dark:border-gray-900 shadow-md ring-blue-200 dark:ring-blue-800' 
+                          : 'bg-gradient-to-br from-blue-500 to-violet-600  border-2 border-white dark:border-gray-900 shadow-md ring-blue-200 dark:ring-blue-900'
                       }`}
                     >
                       <AvatarFallback>
@@ -369,7 +390,7 @@ export function ChatArea() {
                         </span>
                         
                         {message.role === 'assistant' && (
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                          <div className="flex gap-1">
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
@@ -379,11 +400,30 @@ export function ChatArea() {
                                     className="h-6 w-6 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-600 dark:text-gray-300"
                                     onClick={() => copyMessageToClipboard(message.id, message.content)}
                                   >
-                                    {isCopied[message.id] ? <CheckCheck className="h-3.5 w-3.5 text-green-600 dark:text-green-400" /> : <Copy className="h-3.5 w-3.5" />}
+                                    {isCopied[message.id] ? <CheckCheck className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" /> : <Copy className="h-3.5 w-3.5" />}
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
                                   <p>{isCopied[message.id] ? 'تم النسخ!' : 'نسخ'}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+
+                            {/* زر الصوت المضاف */}
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-6 w-6 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-600 dark:text-gray-300"
+                                    onClick={() => handleTextToSpeech(message.content)}
+                                  >
+                                    <Speaker className="h-3.5 w-3.5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>استماع للنص</p>
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
@@ -457,7 +497,7 @@ export function ChatArea() {
               {isLoading && (
                 <div className="flex justify-end animate-fadeIn">
                   <div className="flex flex-row-reverse gap-3">
-                    <Avatar className="h-10 w-10 bg-gradient-to-br from-emerald-500 to-teal-700 border-2 border-white dark:border-gray-900 shadow-md">
+                    <Avatar className="h-10 w-10 bg-gradient-to-br from-emerald-500 to-teal-700 border-2 border-white dark:border-gray-900 shadow-md ring-2 ring-emerald-200 dark:ring-emerald-900">
                       <AvatarFallback>
                         <Bot className="h-5 w-5" />
                       </AvatarFallback>
@@ -477,35 +517,52 @@ export function ChatArea() {
           </ScrollArea>
 
           {/* Footer */}
-          <footer className="p-4 border-t dark:border-gray-800 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-inner relative z-10">
+          <footer className="p-4  backdrop-blur-md  relative z-10">
             <div className="max-w-4xl mx-auto">
-              <div className="relative">
-                <Textarea
-                  ref={textareaRef}
-                  placeholder="اكتب رسالتك هنا..."
-                  className="resize-none pr-4 pl-24 dark:bg-gray-900 min-h-[56px] max-h-40 py-3.5 rounded-xl border border-blue-200 dark:border-blue-900 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                />
-                <div className="absolute left-2 bottom-2 flex gap-1">
-                  <TooltipProvider>
-                    <Tooltip>
+              <div className="mb-3 flex flex-wrap gap-2 justify-center">
+                <TooltipProvider>
+                  {[
+                    { icon: ImagePlus, label: "إنشاء صور" },
+                    { icon: Search, label: "البحث في الويب" },
+                    { icon: ScanSearch, label: "إجراء بحث" },
+                    { icon: Brain, label: "تفكير عميق" },
+                    { icon: Video, label: "فيديو" },
+                    { icon: Image, label: "صورة" },
+                    { icon: FileText, label: "مستندات" },
+                    { icon: Music, label: "موسيقى" },
+                    { icon: Code2, label: "برمجة" },
+                    { icon: Mic, label: "تسجيل صوت" },
+                  ].map(({ icon: Icon, label }, index) => (
+                    <Tooltip key={index}>
                       <TooltipTrigger asChild>
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-10 w-10 rounded-full text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors duration-200"
+                          className="h-9 w-9 rounded-full text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors duration-200"
+                          aria-label={label}
                         >
-                          <Mic className="h-5 w-5" />
+                          <Icon className="h-4 w-4" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>تسجيل صوت</p>
+                      <TooltipContent side="top">
+                        <p>{label}</p>
                       </TooltipContent>
                     </Tooltip>
-                  </TooltipProvider>
-                  
+                  ))}
+                </TooltipProvider>
+              </div>
+
+              <div className="relative">
+                <Textarea
+                  ref={textareaRef}
+                  placeholder="اكتب رسالتك هنا..."
+                  className="resize-none pr-4 pl-14 dark:bg-gray-900 dark:text-white text-gray-800 min-h-[56px] max-h-40 py-3.5 rounded-full border border-blue-200 dark:border-blue-900 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                />
+
+                <div className="absolute left-2 bottom-2 flex gap-1">
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -521,16 +578,20 @@ export function ChatArea() {
                         <p>إرفاق صورة</p>
                       </TooltipContent>
                     </Tooltip>
+
+                    <Button
+                      onClick={handleSend}
+                      disabled={!input.trim() || isLoading}
+                      size="icon"
+                      className={`h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-violet-600 hover:from-blue-600 hover:to-violet-700 shadow-md hover:shadow-lg transition-all duration-200 ${!input.trim() || isLoading ? 'opacity-70' : 'opacity-100'}`}
+                    >
+                      {isLoading ? (
+                        <Loader2 className="h-5 w-5 animate-spin text-white" />
+                      ) : (
+                        <Send className="h-5 w-5" />
+                      )}
+                    </Button>
                   </TooltipProvider>
-                  
-                  <Button
-                    onClick={handleSend}
-                    disabled={!input.trim() || isLoading}
-                    size="icon"
-                    className={`h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-violet-600 hover:from-blue-600 hover:to-violet-700 shadow-md hover:shadow-lg transition-all duration-200 ${!input.trim() || isLoading ? 'opacity-70' : 'opacity-100'}`}
-                  >
-                    <Send className="h-5 w-5" />
-                  </Button>
                 </div>
               </div>
 
@@ -542,13 +603,11 @@ export function ChatArea() {
                   الحاذك - مساعدك الذكي اليومي
                 </Badge>
               </div>
-              
             </div>
           </footer>
         </div>
       </div>
 
-      {/* أضفنا CSS للتأثيرات */}
       <style jsx global>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }
