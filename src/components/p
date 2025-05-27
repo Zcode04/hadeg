@@ -605,8 +605,15 @@ export function ChatArea() {
               </div>
             </div>
           </footer>
+
+
+          
         </div>
       </div>
+
+
+
+
 
       <style jsx global>{`
         @keyframes fadeIn {
